@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Una Sorpresa para Ti 💖</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            font-family: 'Arial', sans-serif;
+            color: white;
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .container {
+            z-index: 10;
+            padding: 20px;
+            max-width: 800px;
+        }
+        
+        .title {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ff3366, #ff6699);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(255, 51, 102, 0.5);
+            animation: titleGlow 2s infinite alternate;
+        }
+        
+        @keyframes titleGlow {
+            0% { text-shadow: 0 0 20px rgba(255, 51, 102, 0.5); }
+            100% { text-shadow: 0 0 40px rgba(255, 102, 153, 0.8); }
+        }
+        
+        .instructions {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            color: #ffccdd;
+            line-height: 1.6;
+        }
+        
+        .counter-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 20px;
+            margin: 30px auto;
+            border: 2px solid rgba(255, 102, 153, 0.3);
+            max-width: 400px;
+        }
+        
+        .counter {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #ff3366;
+            margin: 15px 0;
+            text-shadow: 0 0 20px rgba(255, 51, 102, 0.7);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #ff3366, #ff6699);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+        
+        .message {
+            font-size: 1.8rem;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 102, 153, 0.2);
+            border-radius: 15px;
+            display: none;
+            animation: fadeIn 1s;
+        }
+        
+        .unlock-btn {
+            background: linear-gradient(45deg, #ff3366, #ff6699);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 30px;
+            display: none;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 30px rgba(255, 51, 102, 0.5);
+            transition: all 0.3s;
+        }
+        
+        .unlock-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(255, 51, 102, 0.8);
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Estilos para los corazones */
+        .heart {
+            position: absolute;
+            top: -50px;
+            font-size: 24px;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.3s;
+            z-index: 1;
+            text-shadow: 0 0 10px currentColor;
+        }
+        
+        .heart:hover {
+            transform: scale(1.3);
+        }
+        
+        .heart.clicked {
+            animation: pop 0.5s forwards;
+        }
+        
+        @keyframes pop {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+        
+        .special-heart {
+            font-size: 32px;
+            color: gold;
+            text-shadow: 0 0 20px gold;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+        
+        /* Estrellas de fondo */
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        
+        /* Efecto de confeti */
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            opacity: 0;
+        }
+        
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .title { font-size: 2.5rem; }
+            .instructions { font-size: 1.2rem; }
+            .counter { font-size: 3rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Estrellas de fondo -->
+    <div id="stars"></div>
+    
+    <div class="container">
+        <h1 class="title">💖 Una Sorpresa Especial 💖</h1>
+        
+        <div class="instructions">
+            <p>¡Hola mi amor! 💕</p>
+            <p>Tienes que atrapar <strong>15 corazones</strong> para desbloquear tu sorpresa.</p>
+            <p>Haz clic en cada corazón que veas caer. ¡Algunos son especiales!</p>
+        </div>
+        
+        <div class="counter-container">
+            <p>Corazones atrapados:</p>
+            <div class="counter" id="counter">0 / 15</div>
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+            <p id="progress-text">¡Sigue así!</p>
+        </div>
+        
+        <div class="message" id="message">
+            ¡Felicidades mi amor! 💖 Has atrapado todos los corazones.<br>
+            Ahora puedes desbloquear tu sorpresa especial.
+        </div>
+        
+        <button class="unlock-btn" id="unlockBtn">
+            🎀 Ver Mi Sorpresa 🎀
+        </button>
+    </div>
+    
+    <!-- Área donde caerán los corazones -->
+    <div id="hearts-container"></div>
+    
+    <!-- Confeti -->
+    <div id="confetti-container"></div>
+    
+    <script>
+        // Elementos del DOM
+        const counterElement = document.getElementById('counter');
+        const progressElement = document.getElementById('progress');
+        const progressTextElement = document.getElementById('progress-text');
+        const messageElement = document.getElementById('message');
+        const unlockBtn = document.getElementById('unlockBtn');
+        const heartsContainer = document.getElementById('hearts-container');
+        const starsContainer = document.getElementById('stars');
+        const confettiContainer = document.getElementById('confetti-container');
+        
+        // Variables del juego
+        let heartsClicked = 0;
+        const totalHeartsNeeded = 15;
+        let hearts = [];
+        let gameActive = true;
+        
+        // Crear estrellas de fondo
+        function createStars() {
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                // Tamaño aleatorio
+                const size = Math.random() * 3 + 1;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                
+                // Posición aleatoria
+                star.style.left = `${Math.random() * 100}vw`;
+                star.style.top = `${Math.random() * 100}vh`;
+                
+                // Retraso de animación aleatorio
+                star.style.animationDelay = `${Math.random() * 3}s`;
+                
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // Crear un corazón
+        function createHeart() {
+            if (!gameActive) return;
+            
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            
+            // Decidir si es un corazón especial (10% de probabilidad)
+            const isSpecial = Math.random() < 0.1;
+            if (isSpecial) {
+                heart.classList.add('special-heart');
+                heart.innerHTML = '💝'; // Corazón con moño
+                heart.title = "¡Corazón especial! Vale por 2";
+            } else {
+                // Corazón normal - aleatorio entre varios emojis de corazón
+                const heartTypes = ['❤️', '🧡', '💛', '💚', '💙', '💜', '🤎', '🖤', '🤍', '💖', '💗', '💓', '💞', '💕'];
+                heart.innerHTML = heartTypes[Math.floor(Math.random() * heartTypes.length)];
+            }
+            
+            // Tamaño aleatorio
+            const size = isSpecial ? 32 : Math.random() * 20 + 20;
+            heart.style.fontSize = `${size}px`;
+            
+            // Color aleatorio para corazones normales
+            if (!isSpecial) {
+                const colors = ['#ff3366', '#ff6699', '#ff9966', '#ff66cc', '#ff99cc', '#ffccdd'];
+                heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+            }
+            
+            // Posición horizontal aleatoria
+            const leftPos = Math.random() * 90 + 5; // Entre 5% y 95%
+            heart.style.left = `${leftPos}%`;
+            
+            // Velocidad de caída aleatoria
+            const fallSpeed = Math.random() * 5 + 5; // Entre 2s y 5s
+            const swingAmount = Math.random() * 50 + 20; // Cuánto se mueve de lado a lado
+            
+            // Aplicar animación de caída
+            heart.style.animation = `fall ${fallSpeed}s linear forwards, swing ${fallSpeed * 2}s ease-in-out infinite`;
+            
+            // Almacenar datos del corazón
+            heart.dataset.isSpecial = isSpecial;
+            heart.dataset.speed = fallSpeed;
+            heart.dataset.swing = swingAmount;
+            
+            // Agregar evento de clic
+            heart.addEventListener('click', handleHeartClick);
+            
+            // Agregar al contenedor
+            heartsContainer.appendChild(heart);
+            
+            // Guardar referencia
+            hearts.push({
+                element: heart,
+                isSpecial: isSpecial,
+                clicked: false
+            });
+            
+            // Eliminar corazón después de que caiga
+            setTimeout(() => {
+                if (heart.parentNode && !heart.dataset.clicked) {
+                    heart.remove();
+                    // Eliminar de la lista
+                    const index = hearts.findIndex(h => h.element === heart);
+                    if (index > -1) hearts.splice(index, 1);
+                }
+            }, fallSpeed * 1000);
+            
+            // Crear CSS para animaciones dinámicas
+            if (!document.getElementById('dynamic-styles')) {
+                const styleEl = document.createElement('style');
+                styleEl.id = 'dynamic-styles';
+                document.head.appendChild(styleEl);
+            }
+            
+            // Actualizar estilos dinámicos para la animación de balanceo
+            const styleSheet = document.getElementById('dynamic-styles');
+            if (!styleSheet.innerHTML.includes('@keyframes swing')) {
+                styleSheet.innerHTML += `
+                    @keyframes swing {
+                        0%, 100% { transform: translateX(0) rotate(0deg); }
+                        25% { transform: translateX(-${swingAmount}px) rotate(-5deg); }
+                        75% { transform: translateX(${swingAmount}px) rotate(5deg); }
+                    }
+                    
+                    @keyframes fall {
+                        to { top: 100vh; }
+                    }
+                `;
+            }
+        }
+        
+        // Manejar clic en corazón
+        function handleHeartClick(event) {
+            if (!gameActive) return;
+            
+            const heart = event.target;
+            const isSpecial = heart.dataset.isSpecial === 'true';
+            
+            // Marcar como clickeado
+            heart.dataset.clicked = 'true';
+            heart.classList.add('clicked');
+            heart.style.pointerEvents = 'none';
+            
+            // Encontrar en la lista y marcar como clickeado
+            const heartObj = hearts.find(h => h.element === heart);
+            if (heartObj) heartObj.clicked = true;
+            
+            // Incrementar contador
+            heartsClicked += isSpecial ? 2 : 1;
+            
+            // Actualizar UI
+            updateUI();
+            
+            // Efecto de partículas
+            createHeartParticles(heart);
+            
+            // Eliminar corazón después de la animación
+            setTimeout(() => {
+                heart.remove();
+            }, 500);
+            
+            // Comprobar si ganó
+            if (heartsClicked >= totalHeartsNeeded) {
+                gameWon();
+            }
+        }
+        
+        // Actualizar la interfaz de usuario
+        function updateUI() {
+            // Actualizar contador
+            counterElement.textContent = `${heartsClicked} / ${totalHeartsNeeded}`;
+            
+            // Actualizar barra de progreso
+            const progressPercent = Math.min(100, (heartsClicked / totalHeartsNeeded) * 100);
+            progressElement.style.width = `${progressPercent}%`;
+            
+            // Actualizar texto de progreso
+            if (heartsClicked === totalHeartsNeeded) {
+                progressTextElement.textContent = "¡Completado!";
+            } else if (heartsClicked >= totalHeartsNeeded * 0.8) {
+                progressTextElement.textContent = "¡Casi lo logras!";
+                progressTextElement.style.color = "#ffcc00";
+            } else if (heartsClicked >= totalHeartsNeeded * 0.5) {
+                progressTextElement.textContent = "¡Vas por la mitad!";
+                progressTextElement.style.color = "#ff9966";
+            }
+            
+            // Efecto visual en el contador cuando se acerca a completar
+            if (heartsClicked >= totalHeartsNeeded - 3) {
+                counterElement.style.animation = "pulse 0.5s infinite alternate";
+            }
+        }
+        
+        // Efecto de partículas al hacer clic en un corazón
+        function createHeartParticles(heartElement) {
+            const rect = heartElement.getBoundingClientRect();
+            const x = rect.left + rect.width / 2;
+            const y = rect.top + rect.height / 2;
+            const color = heartElement.style.color || '#ff3366';
+            const isSpecial = heartElement.classList.contains('special-heart');
+            
+            for (let i = 0; i < (isSpecial ? 12 : 8); i++) {
+                const particle = document.createElement('div');
+                particle.className = 'confetti-piece';
+                particle.innerHTML = heartElement.innerHTML;
+                particle.style.position = 'fixed';
+                particle.style.left = `${x}px`;
+                particle.style.top = `${y}px`;
+                particle.style.fontSize = `${isSpecial ? '20px' : '16px'}`;
+                particle.style.color = color;
+                particle.style.zIndex = '100';
+                
+                document.body.appendChild(particle);
+                
+                // Animación de partícula
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 2 + Math.random() * 3;
+                const vx = Math.cos(angle) * speed;
+                const vy = Math.sin(angle) * speed;
+                
+                let opacity = 1;
+                let posX = 0;
+                let posY = 0;
+                
+                const animateParticle = () => {
+                    opacity -= 0.02;
+                    posX += vx;
+                    posY += vy + 0.1; // Gravedad
+                    
+                    particle.style.transform = `translate(${posX}px, ${posY}px)`;
+                    particle.style.opacity = opacity;
+                    
+                    if (opacity > 0) {
+                        requestAnimationFrame(animateParticle);
+                    } else {
+                        particle.remove();
+                    }
+                };
+                
+                requestAnimationFrame(animateParticle);
+            }
+        }
+        
+        // Cuando gana el juego
+        function gameWon() {
+            gameActive = false;
+            
+            // Mostrar mensaje y botón
+            messageElement.style.display = 'block';
+            unlockBtn.style.display = 'block';
+            
+            // Detener la creación de nuevos corazones
+            clearInterval(heartCreationInterval);
+            
+            // Efecto de confeti
+            createVictoryConfetti();
+            
+            // Reproducir sonido de victoria (si está disponible)
+            playVictorySound();
+            
+            // Eliminar corazones restantes
+            hearts.forEach(heartObj => {
+                if (!heartObj.clicked) {
+                    heartObj.element.remove();
+                }
+            });
+        }
+        
+        // Crear confeti de victoria
+        function createVictoryConfetti() {
+            const colors = ['#ff3366', '#ff6699', '#ff9966', '#ffcc00', '#66ccff', '#9966ff'];
+            
+            for (let i = 0; i < 150; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti-piece';
+                
+                // Forma aleatoria (corazón, círculo o rectángulo)
+                const shape = Math.random();
+                if (shape < 0.3) {
+                    confetti.innerHTML = '❤️';
+                    confetti.style.fontSize = '16px';
+                } else {
+                    confetti.style.width = '10px';
+                    confetti.style.height = '10px';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    if (shape < 0.6) {
+                        confetti.style.borderRadius = '50%';
+                    }
+                }
+                
+                // Posición inicial
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.top = '-20px';
+                
+                confettiContainer.appendChild(confetti);
+                
+                // Animación
+                const duration = 3000 + Math.random() * 2000;
+                const delay = Math.random() * 1000;
+                
+                const animation = confetti.animate([
+                    { 
+                        transform: 'translateY(0) rotate(0deg)', 
+                        opacity: 1 
+                    },
+                    { 
+                        transform: `translateY(${window.innerHeight + 100}px) rotate(${Math.random() * 360}deg)`, 
+                        opacity: 0 
+                    }
+                ], {
+                    duration: duration,
+                    delay: delay,
+                    easing: 'cubic-bezier(0.215, 0.610, 0.355, 1)'
+                });
+                
+                animation.onfinish = () => confetti.remove();
+            }
+        }
+        
+        // Reproducir sonido de victoria
+        function playVictorySound() {
+            try {
+                // Crear un contexto de audio simple para un tono de victoria
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Crear un oscilador para un tono agradable
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                // Configurar el sonido
+                oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // Do
+                oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // Mi
+                oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // Sol
+                
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch (e) {
+                console.log("El audio no pudo reproducirse, pero no te preocupes");
+            }
+        }
+        
+        // Redirigir a la página de amor
+        function redirectToLovePage() {
+            // Agregar efecto de desvanecimiento
+            document.body.style.transition = 'opacity 1s';
+            document.body.style.opacity = '0';
+            
+            // Redirigir después del efecto
+            setTimeout(() => {
+                window.location.href = 'love.html'; // Cambia esto al nombre de tu página de amor
+            }, 1000);
+        }
+        
+        // Inicializar el juego
+        function initGame() {
+            createStars();
+            updateUI();
+            
+            // Crear corazones periódicamente
+            heartCreationInterval = setInterval(() => {
+                if (gameActive) {
+                    createHeart();
+                }
+            }, 800);
+            
+            // Evento del botón de desbloqueo
+            unlockBtn.addEventListener('click', redirectToLovePage);
+            
+            // Mensaje inicial especial
+            setTimeout(() => {
+                const initialHeart = document.createElement('div');
+                initialHeart.innerHTML = '💝';
+                initialHeart.style.position = 'fixed';
+                initialHeart.style.top = '50%';
+                initialHeart.style.left = '50%';
+                initialHeart.style.transform = 'translate(-50%, -50%)';
+                initialHeart.style.fontSize = '60px';
+                initialHeart.style.color = '#ff3366';
+                initialHeart.style.zIndex = '20';
+                initialHeart.style.animation = 'pulse 1.5s infinite, float 3s ease-in-out infinite';
+                initialHeart.style.cursor = 'pointer';
+                initialHeart.title = "¡Haz clic para comenzar!";
+                
+                initialHeart.addEventListener('click', () => {
+                    initialHeart.remove();
+                    // Crear primeros corazones
+                    for (let i = 0; i < 3; i++) {
+                        setTimeout(() => createHeart(), i * 300);
+                    }
+                });
+                
+                document.body.appendChild(initialHeart);
+            }, 500);
+        }
+        
+        // Variables globales
+        let heartCreationInterval;
+        
+        // Iniciar el juego cuando la página cargue
+        window.addEventListener('DOMContentLoaded', initGame);
+        
+        // Hacer que la página sea responsive al redimensionar
+        window.addEventListener('resize', () => {
+            // Los corazones se reposicionan automáticamente con % y vw/vh
+        });
+    </script>
+</body>
+</html>
